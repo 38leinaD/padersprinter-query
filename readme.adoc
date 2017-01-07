@@ -1,0 +1,6 @@
+= Padersprinter Query
+
+A simple Java API to query my local transportation website (link:https://www.padersprinter.de/fahrplaninfo/fahrplanauskunft/[Padersprinter]) for schedules and bus.
+
+. `git clone https://github.com/38leinaD/padersprinter-query.git`
+. `mvn package`
