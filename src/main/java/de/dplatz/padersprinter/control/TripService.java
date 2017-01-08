@@ -6,24 +6,15 @@
 package de.dplatz.padersprinter.control;
 
 import de.dplatz.padersprinter.entity.Leg;
-import de.dplatz.padersprinter.entity.Location;
 import de.dplatz.padersprinter.entity.TripQuery;
 import de.dplatz.padersprinter.entity.Transport;
 import de.dplatz.padersprinter.entity.Trip;
 import java.time.LocalTime;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
-import javax.json.JsonArray;
-import javax.json.JsonObject;
-import javax.json.JsonValue;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
@@ -35,13 +26,9 @@ import org.apache.log4j.Logger;
 import org.htmlcleaner.CleanerProperties;
 import org.htmlcleaner.DomSerializer;
 import org.htmlcleaner.HtmlCleaner;
-import org.htmlcleaner.TagNode;
-import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import rx.Observable;
-import rx.Single;
-import rx.Subscriber;
 
 /**
  *
@@ -51,6 +38,8 @@ public class TripService {
 
     private static final Logger logger = Logger.getLogger(TripService.class.getName());
 
+    private static final String TRIP_NODES_XPATH = "//div[contains(@class, 'efa-result')]/div[contains(@class, 'col-md-12')]/div[contains(@class, 'panel panel-default')]";
+    
     HttpClient httpClient = new HttpClient();
 
     public Observable<Trip> query(TripQuery query) {
@@ -58,7 +47,6 @@ public class TripService {
         final DomSerializer domSerializer = new DomSerializer(new CleanerProperties());
         final XPath xpath = XPathFactory.newInstance().newXPath();
 
-        final String TRIP_NODES_XPATH = "//div[contains(@class, 'efa-result')]/div[contains(@class, 'col-md-12')]/div[contains(@class, 'panel panel-default')]";
 
         return httpClient.get(query)
                 .map(htmlCleaner::clean)
@@ -84,9 +72,7 @@ public class TripService {
                     logger.info("HTML contains " + nodes.size() + " result-panels.");
                     return Observable.from(nodes);
                 })
-                .flatMap(tripNode -> {
-                    return parseTrip(tripNode).map(Observable::just).orElseGet(Observable::empty);
-                });
+                .flatMap(tripNode -> parseTrip(tripNode).map(Observable::just).orElseGet(Observable::empty));
     }
 
     static class HttpClient {
@@ -160,7 +146,6 @@ public class TripService {
     Optional<Leg> parseLeg(Node legNode, XPath xpath) throws XPathExpressionException {
         final Node startNode = getNode(legNode, "./tbody/tr[./td[text() = 'ab']]", xpath);
         final Node endNode = getNode(legNode, "./tbody/tr[./td[text() = 'an']]", xpath);
-        //log.warn(">> " +startNode);
 
         LocalTime startTime = LocalTime.parse(parseStringNode(startNode, "./td[1]", xpath));
         String startLocation = parseStringNode(startNode, "./td[4]", xpath);
@@ -168,14 +153,11 @@ public class TripService {
         LocalTime endTime = LocalTime.parse(parseStringNode(endNode, "./td[1]", xpath));
         String endLocation = parseStringNode(endNode, "./td[4]", xpath);
 
-        //log.info("Start Time: " + startLocation);
         if (isNodePresent(legNode, ".//i[contains(@class, 'icon-pedestrian')]", xpath)) {
-            //log.info("WALKING LEG");
             final String id = parseStringNode(legNode, "./tbody/tr[.//i[contains(@class, 'icon-pedestrian')]]/td[4]", xpath);
             Leg l = new Leg(Transport.walk(id), startTime, startLocation, endTime, endLocation);
             return Optional.of(l);
         } else if (isNodePresent(legNode, ".//i[contains(@class, 'fa-bus')]", xpath)) {
-            //log.info("WALKING LEG");
             final String id = parseStringNode(legNode, "./tbody/tr[.//i[contains(@class, 'fa-bus')]]/td[4]", xpath);
             Leg l = new Leg(Transport.bus(id), startTime, startLocation, endTime, endLocation);
             return Optional.of(l);
@@ -191,7 +173,7 @@ public class TripService {
         return val;
     }
 
-    static int parseIntegerNode(Node node, String expr, XPath xpath) throws XPathExpressionException, NumberFormatException {
+    static int parseIntegerNode(Node node, String expr, XPath xpath) throws XPathExpressionException {
         return Integer.parseInt((String) xpath.evaluate(expr, node, XPathConstants.STRING));
     }
 

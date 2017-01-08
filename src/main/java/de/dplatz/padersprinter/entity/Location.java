@@ -17,9 +17,9 @@ public class Location {
 
     private static final Logger logger = Logger.getLogger(Location.class.getName());
     
-    public static enum Type {
-        Street,
-        Stop
+    public enum Type {
+        STREET,
+        STOP
     }
     private final String name;
     private final Type type;
@@ -55,9 +55,9 @@ public class Location {
         final String typeString = json.getString("anyType");
         Type type;
         if ("street".equals(typeString)) {
-            type = Type.Street;
+            type = Type.STREET;
         } else if ("stop".equals(typeString)) {
-            type = Type.Stop;
+            type = Type.STOP;
         } else {
             logger.info("Unable to handle anyType-parameter with value '" + typeString + "'");
             return Optional.empty();

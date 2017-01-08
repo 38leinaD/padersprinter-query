@@ -11,14 +11,14 @@ package de.dplatz.padersprinter.entity;
  */
 public class Transport {
 
-    public static enum Type {
+    public enum Type {
         WALK,
         BUS,
         TRAIN
     }
 
-    final private String id;
-    final private Type type;
+    private final String id;
+    private final Type type;
 
     public Transport(String id, Type type) {
         this.id = id;

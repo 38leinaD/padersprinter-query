@@ -9,11 +9,9 @@ import de.dplatz.padersprinter.entity.Location;
 import de.dplatz.padersprinter.entity.LocationQuery;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonStructure;
-import javax.json.JsonValue;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.MediaType;
@@ -29,30 +27,6 @@ public class LocationService {
 
     private static final Logger logger = Logger.getLogger(LocationService.class.getName());
 
-    public Observable<Location> searchOriginLocations(String location) {
-        return searchLocations(new LocationQuery(location, "origin"));
-    }
-
-    public Observable<Location> searchDestinationLocations(String location) {
-        return searchLocations(new LocationQuery(location, "destination"));
-    }
-
-    public Observable<Location> searchBestOriginLocation(String location) {
-        return searchOriginLocations(location)
-                .reduce((l1, l2) -> {
-                    return l1.getResultQuality() >= l2.getResultQuality() ? l1 : l2;
-                });
-    }
-
-    public Observable<Location> searchBestDestinationLocation(String location) {
-        return searchDestinationLocations(location)
-                .reduce((l1, l2) -> {
-                    return l1.getResultQuality() >= l2.getResultQuality() ? l1 : l2;
-                });
-    }
-
-    HttpClient httpClient = new HttpClient();
-
     static class HttpClient {
 
         public Response get(LocationQuery query) {
@@ -67,6 +41,26 @@ public class LocationService {
             logger.info("get: " + duration + "ms");
             return response;
         }
+    }
+    
+    HttpClient httpClient = new HttpClient();
+    
+    public Observable<Location> searchOriginLocations(String location) {
+        return searchLocations(new LocationQuery(location, "origin"));
+    }
+
+    public Observable<Location> searchDestinationLocations(String location) {
+        return searchLocations(new LocationQuery(location, "destination"));
+    }
+
+    public Observable<Location> searchBestOriginLocation(String location) {
+        return searchOriginLocations(location)
+                .reduce((l1, l2) -> l1.getResultQuality() >= l2.getResultQuality() ? l1 : l2);
+    }
+
+    public Observable<Location> searchBestDestinationLocation(String location) {
+        return searchDestinationLocations(location)
+                .reduce((l1, l2) -> l1.getResultQuality() >= l2.getResultQuality() ? l1 : l2);
     }
 
     Observable<Location> searchLocations(LocationQuery query) {

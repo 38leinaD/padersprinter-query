@@ -5,7 +5,6 @@
  */
 package de.dplatz.padersprinter.entity;
 
-import java.time.format.DateTimeFormatter;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
 import org.apache.log4j.Logger;

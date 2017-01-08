@@ -13,7 +13,7 @@ import de.dplatz.padersprinter.entity.Location;
  */
 public class TestData {
     public static class Locations {
-        public static final Location Offices = new Location("Paderborn, Heinz-Nixdorf-Ring", Location.Type.Stop, "23207086", "23207086", 0, "Work");
-        public static final Location City = new Location("Paderborn, Am Bogen", Location.Type.Stop, "23207008", "23207008", 0, "City");
+        public static final Location Offices = new Location("Paderborn, Heinz-Nixdorf-Ring", Location.Type.STOP, "23207086", "23207086", 0, "Work");
+        public static final Location City = new Location("Paderborn, Am Bogen", Location.Type.STOP, "23207008", "23207008", 0, "City");
     }
 }
