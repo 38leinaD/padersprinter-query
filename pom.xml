@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <name>Padersprinter Query</name>
     <groupId>de.dplatz.padersprinter</groupId>
     <artifactId>padersprinter-query</artifactId>
-    <version>0.2-SNAPSHOT</version>
+    <version>0.11-SNAPSHOT</version>
     <packaging>jar</packaging>
     <description>A simple Java API to query the local transportation website www.padersprinter.de for schedules and bus.</description>
     <url>http://www.dplatz.de</url>
@@ -100,7 +101,7 @@
     </properties>
     <profiles>
         <profile>
-            <id>test</id>
+            <id>release</id>
             <build>
                 <plugins>
                     <plugin>
@@ -109,58 +110,26 @@
                         <version>0.7.7.201606060606</version>
                         <executions>
                             <execution>
-                                <id>pre-unit-test</id>
+                                <phase>initialize</phase>
                                 <goals>
                                     <goal>prepare-agent</goal>
                                 </goals>
-                                <configuration>
-                                    <propertyName>surefireArgLine</propertyName>
-                                    <append>true</append>
-                                </configuration>
                             </execution>
+                        </executions>	    
+                    </plugin>
+                    <plugin>
+                        <groupId>org.sonarsource.scanner.maven</groupId>
+                        <artifactId>sonar-maven-plugin</artifactId>
+                        <version>3.2</version>
+                        <executions>
                             <execution>
-                                <id>post-unit-test</id>
-                                <phase>test</phase>
+                                <phase>deploy</phase>
                                 <goals>
-                                    <goal>report</goal>
+                                    <goal>sonar</goal>
                                 </goals>
                             </execution>
                         </executions>
                     </plugin>
-                    <plugin>
-                        <groupId>org.sonarsource.java</groupId>
-                        <artifactId>sonar-jacoco-listeners</artifactId>
-                        <version>4.2</version>
-                    </plugin>
-                    <plugin>  
-                        <groupId>org.apache.maven.plugins</groupId>  
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <version>2.19.1</version>
-                        <configuration>  
-                            <argLine>${surefireArgLine}</argLine>
-                            <skip>true</skip>  
-                            <trimStackTrace>false</trimStackTrace>  
-                        </configuration>  
-                        <executions>  
-                            <execution>  
-                                <id>unit-tests</id>  
-                                <phase>test</phase>  
-                                <goals>  
-                                    <goal>test</goal>  
-                                </goals>  
-                                <configuration>
-                                    <skip>false</skip>  
-                                </configuration>  
-                            </execution>  
-                        </executions>  
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>release</id>
-            <build>
-                <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-release-plugin</artifactId>
@@ -176,6 +145,20 @@
                             </dependency>
                         </dependencies>
                     </plugin>
+                    <!--plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin-->
                 </plugins>
             </build>
         </profile>
