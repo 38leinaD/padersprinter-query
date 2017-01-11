@@ -4,7 +4,7 @@
     <name>Padersprinter Query</name>
     <groupId>de.dplatz.padersprinter</groupId>
     <artifactId>padersprinter-query</artifactId>
-    <version>0.12</version>
+    <version>0.13-SNAPSHOT</version>
     <packaging>jar</packaging>
     <description>A simple Java API to query the local transportation website www.padersprinter.de for schedules and bus.</description>
     <url>http://www.dplatz.de</url>
@@ -32,7 +32,7 @@
         <connection>scm:git:git@github.com:38leinaD/padersprinter-query.git</connection>
         <url>scm:git:git@github.com:38leinaD/padersprinter-query.git</url>
         <developerConnection>scm:git:git@github.com:38leinaD/padersprinter-query.git</developerConnection>
-        <tag>v0.12</tag>
+        <tag>HEAD</tag>
     </scm>
     <distributionManagement>
         <repository>
